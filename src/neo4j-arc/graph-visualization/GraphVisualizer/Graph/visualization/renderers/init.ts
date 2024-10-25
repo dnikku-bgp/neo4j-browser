@@ -278,7 +278,7 @@ const relationshipType = new Renderer<RelationshipModel>({
           return null
         }
       })
-      .text(rel => rel.shortCaption ?? '')
+      .text(rel => rel.caption ?? '')
   }
 })
 
