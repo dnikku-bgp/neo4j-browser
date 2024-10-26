@@ -164,6 +164,13 @@ export class GraphEventHandlerModel {
   nodeRClicked(node: NodeModel): void {
     this.activateNode(node)
   }
+  
+  nodeDblClicked(d: NodeModel): void {
+    if (d.expanded) {
+      return
+    }
+    this.nodeExpand(d)
+  }
 
   nodeUnlock(d: NodeModel): void {
     if (!d) {
@@ -176,12 +183,16 @@ export class GraphEventHandlerModel {
     this.deselectItem()
     this.onGraphInteraction('NODE_UNPINNED')
   }
-
-  nodeDblClicked(d: NodeModel): void {
+  
+  nodeExpand(d: NodeModel): void {
     if (d.expanded) {
-      this.nodeCollapse(d)
+      d.expanded = false
+      this.graph.collapseNode(d)
+      this.visualization.update({ updateNodes: true, updateRelationships: true })
+      this.graphModelChanged()
       return
     }
+    
     d.expanded = true
     const graph = this.graph
     const visualization = this.visualization
@@ -197,13 +208,6 @@ export class GraphEventHandlerModel {
       }
     )
     this.onGraphInteraction('NODE_EXPAND')
-  }
-
-  nodeCollapse(d: NodeModel): void {
-    d.expanded = false
-    this.graph.collapseNode(d)
-    this.visualization.update({ updateNodes: true, updateRelationships: true })
-    this.graphModelChanged()
   }
 
   onNodeMouseOver(node: NodeModel): void {
@@ -276,6 +280,7 @@ export class GraphEventHandlerModel {
       .on('nodeClicked', this.nodeClicked.bind(this))
       .on('nodeRClicked', this.nodeRClicked.bind(this))
       .on('nodeDblClicked', this.nodeDblClicked.bind(this))
+      .on('nodeExpand', this.nodeExpand.bind(this))
       .on('nodeUnlock', this.nodeUnlock.bind(this))
     this.onItemMouseOut()
   }

@@ -174,7 +174,7 @@ const donutExpandNode = new Renderer<NodeModel>({
     return createMenuItem(
       selection,
       viz,
-      'nodeDblClicked',
+      'nodeExpand',
       2,
       'expand-node',
       [-8, -10],
