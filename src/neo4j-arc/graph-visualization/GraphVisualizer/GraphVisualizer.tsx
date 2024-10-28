@@ -38,7 +38,7 @@ import { GraphStats } from '../utils/mapper'
 import { GraphModel } from '../models/Graph'
 import { GraphInteractionCallBack } from './Graph/GraphEventHandlerModel'
 
-const DEFAULT_MAX_NEIGHBOURS = 100
+const DEFAULT_MAX_NEIGHBOURS = 1000
 
 type GraphVisualizerDefaultProps = {
   maxNeighbours: number
