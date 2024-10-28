@@ -147,9 +147,6 @@ export class GraphEventHandlerModel {
     }
     this.activateNode(null)
 
-    node.hoverFixed = false
-    node.fx = node.x
-    node.fy = node.y
     if (!node.selected) {
       this.selectItem(node)
       this.onItemSelected({
