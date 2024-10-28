@@ -46,11 +46,11 @@ export const LINK_DISTANCE = 45
 export const FORCE_LINK_DISTANCE = (relationship: RelationshipModel): number =>
   relationship.source.radius + relationship.target.radius + LINK_DISTANCE * 2
 export const FORCE_COLLIDE_RADIUS = (node: NodeModel): number =>
-  node.radius + 25
+  3 * node.radius + 25
 export const FORCE_CHARGE = -400
 export const FORCE_CENTER_X = 0.03
 export const FORCE_CENTER_Y = 0.03
 
 export const ZOOM_MIN_SCALE = 0.1
-export const ZOOM_MAX_SCALE = 2
+export const ZOOM_MAX_SCALE = 2.5
 export const ZOOM_FIT_PADDING_PERCENT = 0.05
