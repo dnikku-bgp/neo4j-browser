@@ -52,22 +52,10 @@ export const nodeEventHandlers = (
   }
 
   const onNodeMouseOver = (_event: Event, node: NodeModel) => {
-    if (!node.fx && !node.fy) {
-      node.hoverFixed = true
-      node.fx = node.x
-      node.fy = node.y
-    }
-
     trigger('nodeMouseOver', node)
   }
 
   const onNodeMouseOut = (_event: Event, node: NodeModel) => {
-    if (node.hoverFixed) {
-      node.hoverFixed = false
-      node.fx = null
-      node.fy = null
-    }
-
     trigger('nodeMouseOut', node)
   }
 
