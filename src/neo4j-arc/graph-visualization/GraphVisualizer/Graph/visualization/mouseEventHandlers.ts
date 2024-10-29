@@ -41,6 +41,11 @@ export const nodeEventHandlers = (
   const onNodeClick = (_event: Event, node: NodeModel) => {
     trigger('nodeClicked', node)
   }
+  
+  const onNodeRClick = (_event: Event, node: NodeModel) => {
+    _event.preventDefault()
+    trigger('nodeRClicked', node)
+  }
 
   const onNodeDblClick = (_event: Event, node: NodeModel) => {
     trigger('nodeDblClicked', node)
@@ -115,6 +120,7 @@ export const nodeEventHandlers = (
     .on('mouseout', onNodeMouseOut)
     .on('click', onNodeClick)
     .on('dblclick', onNodeDblClick)
+    .on('contextmenu', onNodeRClick)
 }
 
 export const relationshipEventHandlers = (

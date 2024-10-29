@@ -42,7 +42,7 @@ const drawArc = function (radius: number, itemNumber: number, width = 30) {
     .padAngle(0.03)
 }
 
-const getSelectedNode = (node: NodeModel) => (node.selected ? [node] : [])
+const getActiveNode = (node: NodeModel) => (node.active ? [node] : [])
 
 const attachContextEvent = (
   eventType: string,
@@ -90,7 +90,7 @@ const createMenuItem = function (
 ) {
   const tab = selection
     .selectAll(`path.${className}`)
-    .data(getSelectedNode)
+    .data(getActiveNode)
     .join('path')
     .classed(className, true)
     .classed('context-menu-item', true)
@@ -107,7 +107,7 @@ const createMenuItem = function (
   )
   const icon = selection
     .selectAll(`.icon.${className}`)
-    .data(getSelectedNode)
+    .data(getActiveNode)
     .join('g')
     .html(svgIcon.innerHTML)
     .classed('icon', true)
