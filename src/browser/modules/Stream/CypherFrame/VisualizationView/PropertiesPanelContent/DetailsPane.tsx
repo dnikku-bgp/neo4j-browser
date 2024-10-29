@@ -41,14 +41,25 @@ export function DetailsPane({
     value: `${vizItem.item.id}`,
     type: 'String'
   }
-  const elementIdProperty = {
+  /*const elementIdProperty = {
     key: '<elementId>',
     value: `${vizItem.item.elementId}`,
+    type: 'String'
+  }*/
+  const statusProperty = {
+    key: '<status>',
+    value: [
+      vizItem.item?.expanded == true ? "expanded" : null,
+      vizItem.item?.minified == true ? "minified" : null,
+      vizItem.item?.fx != null ? "pinned" : null,
+      vizItem.item?.radius != null ? `radius-${vizItem.item?.radius}` : null
+    ].filter(it => it != null).join(" "),
     type: 'String'
   }
   const allItemProperties = [
     idProperty,
-    elementIdProperty,
+    // elementIdProperty,
+    statusProperty,
     ...vizItem.item.propertyList
   ].sort((a, b) => (a.key < b.key ? -1 : 1))
   const visibleItemProperties = allItemProperties.slice(0, maxPropertiesCount)

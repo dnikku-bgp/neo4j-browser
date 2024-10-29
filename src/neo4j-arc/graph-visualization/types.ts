@@ -30,7 +30,7 @@ export type VizItem =
 
 export type NodeItem = {
   type: 'node'
-  item: Pick<NodeModel, 'id' | 'elementId' | 'labels' | 'propertyList'>
+  item: Pick<NodeModel, 'id' | 'elementId' | 'labels' | 'propertyList' | 'expanded' | 'minified' | 'fx' | 'radius' >
 }
 
 type ContextMenuItem = {
