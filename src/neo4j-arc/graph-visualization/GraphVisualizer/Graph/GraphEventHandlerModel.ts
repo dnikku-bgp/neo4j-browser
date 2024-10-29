@@ -102,7 +102,7 @@ export class GraphEventHandlerModel {
 
     this.visualization.update({
       updateNodes: this.selectedItem.isNode,
-      updateRelationships: this.selectedItem.isRelationship,
+      updateRelationships: this.selectedItem.isRelationship || this.selectedItem.isNode,
       restartSimulation: false
     })
   }
@@ -113,7 +113,7 @@ export class GraphEventHandlerModel {
 
       this.visualization.update({
         updateNodes: this.selectedItem.isNode,
-        updateRelationships: this.selectedItem.isRelationship,
+        updateRelationships: this.selectedItem.isRelationship || this.selectedItem.isNode,
         restartSimulation: false
       })
 

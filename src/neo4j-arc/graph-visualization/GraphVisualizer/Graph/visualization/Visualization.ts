@@ -214,7 +214,12 @@ export class Visualization {
   }
 
   private updateRelationships() {
-    const relationships = this.graph.relationships()
+    const [selectedNode] = this.graph.nodes().filter(node => node.selected)
+    const relationships = selectedNode 
+      ? this.graph.relationships()
+        .filter(rel => rel.source === selectedNode || rel.target === selectedNode)
+      : this.graph.relationships()
+      
     this.geometry.onGraphChange(this.graph, {
       updateNodes: false,
       updateRelationships: true
