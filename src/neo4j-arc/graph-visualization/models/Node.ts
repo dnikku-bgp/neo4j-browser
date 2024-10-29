@@ -48,6 +48,7 @@ export class NodeModel {
   labelText: NodeTextLine
   captionText?: NodeTextLine
   selected: boolean
+  active: boolean
   expanded: boolean
   minified: boolean
   contextMenu?: { menuSelection: string; menuContent: string; label: string }
@@ -79,6 +80,7 @@ export class NodeModel {
     this.radius = 0
     this.labelText = { text: '', width: 0, height: 0}
     this.selected = false
+    this.active = false
     this.expanded = false
     this.minified = false
     this.x = 0

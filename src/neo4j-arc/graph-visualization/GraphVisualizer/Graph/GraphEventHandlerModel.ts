@@ -49,6 +49,7 @@ export class GraphEventHandlerModel {
   onItemSelected: (item: VizItem) => void
   onGraphInteraction: GraphInteractionCallBack
   selectedItem: NodeModel | RelationshipModel | null
+  activeNode: NodeModel | null
 
   constructor(
     graph: GraphModel,
@@ -63,6 +64,7 @@ export class GraphEventHandlerModel {
     this.visualization = visualization
     this.getNodeNeighbours = getNodeNeighbours
     this.selectedItem = null
+    this.activeNode = null
     this.onItemMouseOver = onItemMouseOver
     this.onItemSelected = onItemSelected
     this.onGraphInteraction = onGraphInteraction ?? (() => undefined)
@@ -72,6 +74,23 @@ export class GraphEventHandlerModel {
 
   graphModelChanged(): void {
     this.onGraphModelChange(getGraphStats(this.graph))
+  }
+
+  activateNode(node: NodeModel | null): void {
+    if (this.activeNode) {
+      this.activeNode.active = false
+      this.activeNode = null
+    }
+
+    if (node) {
+      this.activeNode = node
+      node.active = true
+      this.visualization.update({
+        updateNodes: true,
+        updateRelationships: false,
+        restartSimulation: false
+      })
+    }
   }
 
   selectItem(item: NodeModel | RelationshipModel): void {
@@ -126,6 +145,8 @@ export class GraphEventHandlerModel {
     if (!node) {
       return
     }
+    this.activateNode(null)
+
     node.hoverFixed = false
     node.fx = node.x
     node.fy = node.y
@@ -140,10 +161,16 @@ export class GraphEventHandlerModel {
     }
   }
 
+  nodeRClicked(node: NodeModel): void {
+    this.activateNode(node)
+  }
+
   nodeUnlock(d: NodeModel): void {
     if (!d) {
       return
     }
+    this.activateNode(null)
+    
     d.fx = null
     d.fy = null
     this.deselectItem()
@@ -247,6 +274,7 @@ export class GraphEventHandlerModel {
       .on('canvasClicked', this.onCanvasClicked.bind(this))
       .on('nodeClose', this.nodeClose.bind(this))
       .on('nodeClicked', this.nodeClicked.bind(this))
+      .on('nodeRClicked', this.nodeRClicked.bind(this))
       .on('nodeDblClicked', this.nodeDblClicked.bind(this))
       .on('nodeUnlock', this.nodeUnlock.bind(this))
     this.onItemMouseOut()
