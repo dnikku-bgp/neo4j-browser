@@ -34,17 +34,41 @@ export class GraphGeometryModel {
     this.canvas = document.createElement('canvas')
   }
 
-  formatNodeCaptions(nodes: NodeModel[]): void {
+  formatNodeLabel(nodes: NodeModel[]): void {
     const canvas2DContext = this.canvas.getContext('2d')
     if (canvas2DContext) {
-      nodes.forEach(
-        node =>
-          (node.caption = fitCaptionIntoCircle(
-            node,
-            this.style,
-            canvas2DContext
-          ))
-      )
+      nodes.forEach(node => {
+        const text = this.style.forNode(node).props['label'] ?? node.labels[0]
+
+        const fontFamily = 'sans-serif'
+        const fontSize = parseFloat(this.style.forNode(node).get('font-size'))
+
+        node.labelText = {
+          text,
+          height: fontSize + 2,
+          width:  measureText(text, fontFamily, fontSize, canvas2DContext) + 2
+        }
+      })
+    }
+  }
+  
+  formatNodeCaption(nodes: NodeModel[]): void {
+    const canvas2DContext = this.canvas.getContext('2d')
+    if (canvas2DContext) {
+      nodes.forEach(node => {
+
+        const template = this.style.forNode(node).get('caption')
+        const text = this.style.interpolate(template, node) ?? node.id
+
+        const fontFamily = 'sans-serif'
+        const fontSize = parseFloat(this.style.forNode(node).get('font-size'))
+
+        node.captionText = {
+          text,
+          height: fontSize + 2,
+          width:  measureText(text, fontFamily, fontSize, canvas2DContext) + 2
+        }
+      })
     }
   }
 
@@ -67,7 +91,8 @@ export class GraphGeometryModel {
   ): void {
     if (!!options.updateNodes) {
       this.setNodeRadii(graph.nodes())
-      this.formatNodeCaptions(graph.nodes())
+      this.formatNodeLabel(graph.nodes())
+      this.formatNodeCaption(graph.nodes())
     }
 
     if (!!options.updateRelationships) {
