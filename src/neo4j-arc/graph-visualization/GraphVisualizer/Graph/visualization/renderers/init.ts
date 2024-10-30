@@ -18,14 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { BaseType } from 'd3-selection'
+import { hsl, rgb } from 'd3-color'
 
-import { NodeCaptionLine, NodeModel } from '../../../../models/Node'
+import { NodeCaptionLine, NodeModel, NodeTextLine } from '../../../../models/Node'
 import { RelationshipModel } from '../../../../models/Relationship'
 import Renderer from '../Renderer'
 
 const noop = () => undefined
 
 const nodeRingStrokeSize = 8
+
+const borderColor = (color: string, defaultValue: string) =>
+  color ? rgb(color).darker() : defaultValue
+
+// const textColor = (color: any, defaultValue: string) =>
+//  color && hsl(color).l < 0.7 ? '#FFFFFF' : '#000000'
 
 const nodeOutline = new Renderer<NodeModel>({
   name: 'nodeOutline',
@@ -53,30 +60,24 @@ const nodeOutline = new Renderer<NodeModel>({
   onTick: noop
 })
 
-const nodeCaption = new Renderer<NodeModel>({
-  name: 'nodeCaption',
+const nodeOutlineLabel = new Renderer<NodeModel>({
+  name: 'nodeOutlineLabel',
   onGraphChange(selection, viz) {
     return (
       selection
-        .selectAll('text.caption')
-        .data((node: NodeModel) => node.caption)
+        .selectAll('text.b-outline-label')
+        .data((node: NodeModel) => [node])
         .join('text')
-        // Classed element ensures duplicated data will be removed before adding
-        .classed('caption', true)
+        .classed('b-outline-label', true)
         .attr('text-anchor', 'middle')
         .attr('pointer-events', 'none')
         .attr('x', 0)
-        .attr('y', (line: NodeCaptionLine) => line.baseline)
-        .attr('font-size', (line: NodeCaptionLine) =>
-          viz.style.forNode(line.node).get('font-size')
-        )
-        .attr('fill', (line: NodeCaptionLine) =>
-          viz.style.forNode(line.node).get('text-color-internal')
-        )
-        .text((line: NodeCaptionLine) => line.text)
+        .attr('y', (node: NodeModel) => node.labelText.height / 2 - 2)
+        .attr('font-size', (node: NodeModel) => viz.style.forNode(node).get('font-size'))
+        .attr('fill', '#000000')
+        .text((node: NodeModel) => node.labelText.text)
     )
   },
-
   onTick: noop
 })
 
@@ -99,6 +100,43 @@ const nodeRing = new Renderer<NodeModel>({
     return circles.exit().remove()
   },
 
+  onTick: noop
+})
+
+const nodeCaption = new Renderer<NodeModel>({
+  name: 'nodeText',
+  onGraphChange(selection, viz) {
+    const captions = selection
+      .filter((node: NodeModel) => node.captionText != null)
+
+    captions
+      .selectAll('rect.caption')
+      .data((node: NodeModel) => [node])
+      .join('rect')
+      .classed('caption', true)
+      .attr('pointer-events', 'none')
+      .attr('x', (node: NodeModel) => - node.captionText!.width / 2)
+      .attr('y', (node: NodeModel) => node.radius + 2)
+      .attr('rx', 2)
+      .attr('ry', 2)
+      .attr('width', (node: NodeModel) => node.captionText!.width)
+      .attr('height', (node: NodeModel) => node.captionText!.height)
+      .attr('fill', (node: NodeModel) => viz.style.forNode(node).get('color'))
+
+    captions
+      .selectAll('text.caption')
+      .data((node: NodeModel) => [node])
+      .join('text')
+      .classed('caption', true)
+      .attr('text-anchor', 'middle')
+      .attr('pointer-events', 'none')
+      .attr('x', 0)
+      .attr('y', (node: NodeModel) => node.radius + node.captionText!.height)
+      .attr('font-size', (node: NodeModel) => viz.style.forNode(node).get('font-size'))
+      .attr('fill', (node: NodeModel) => viz.style.forNode(node).get('text-color-internal'))
+      .text((node: NodeModel) => node.captionText!.text)
+    
+  },
   onTick: noop
 })
 
@@ -180,7 +218,7 @@ const relationshipOverlay = new Renderer<RelationshipModel>({
   }
 })
 
-const node = [nodeOutline, nodeCaption, nodeRing]
+const node = [nodeOutline, nodeOutlineLabel, nodeCaption, nodeRing]
 
 const relationship = [arrowPath, relationshipType, relationshipOverlay]
 

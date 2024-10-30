@@ -28,6 +28,12 @@ export type NodeCaptionLine = {
   remainingWidth: number
 }
 
+export type NodeTextLine = {
+  text: string
+  width: number
+  height: number
+}
+
 export class NodeModel {
   id: string
   elementId: string
@@ -39,7 +45,8 @@ export class NodeModel {
 
   // Visualisation properties
   radius: number
-  caption: NodeCaptionLine[]
+  labelText: NodeTextLine
+  captionText?: NodeTextLine
   selected: boolean
   expanded: boolean
   minified: boolean
@@ -70,7 +77,7 @@ export class NodeModel {
 
     // Initialise visualisation items
     this.radius = 0
-    this.caption = []
+    this.labelText = { text: '', width: 0, height: 0}
     this.selected = false
     this.expanded = false
     this.minified = false
