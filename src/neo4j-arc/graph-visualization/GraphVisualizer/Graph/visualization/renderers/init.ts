@@ -26,7 +26,7 @@ import Renderer from '../Renderer'
 
 const noop = () => undefined
 
-const nodeRingStrokeSize = 8
+const nodeRingStrokeSize = 4
 
 const borderColor = (color: string, defaultValue: string) =>
   color ? rgb(color).darker() : defaultValue
@@ -83,23 +83,19 @@ const nodeOutlineLabel = new Renderer<NodeModel>({
 
 const nodeRing = new Renderer<NodeModel>({
   name: 'nodeRing',
-  onGraphChange(selection) {
-    const circles = selection
+  onGraphChange(selection, viz) {
+    return selection
       .selectAll('circle.ring')
-      .data((node: NodeModel) => [node])
-
-    circles
-      .enter()
-      .insert('circle', '.b-outline')
+      .data(node => [node])
+      .join('circle')
       .classed('ring', true)
       .attr('cx', 0)
       .attr('cy', 0)
       .attr('stroke-width', `${nodeRingStrokeSize}px`)
-      .attr('r', (node: NodeModel) => node.radius + 4)
-
-    return circles.exit().remove()
+      .attr('r', (node: NodeModel) => 
+        node.radius + parseFloat(viz.style.forNode(node).get('border-width')) + 2
+      )
   },
-
   onTick: noop
 })
 
@@ -210,7 +206,7 @@ const relationshipOverlay = new Renderer<RelationshipModel>({
   },
 
   onTick(selection) {
-    const band = 16
+    const band = nodeRingStrokeSize * 1.4
 
     return selection
       .selectAll<BaseType, RelationshipModel>('path.overlay')
