@@ -102,15 +102,16 @@ module.exports = () => {
       openAnalyzer: false,
       reportFilename: './../bundle-report.html'
     }),
-    new ForkTsCheckerWebpackPlugin({
-      eslint: {
-        files: './src/**/*.{ts,tsx,js,jsx}'
-      },
-      issue: { exclude: { severity: 'warning' } }
-    }),
-    new ForkTsCheckerNotifierWebpackPlugin({
-      title: 'TypeScript'
-    }),
+    // [nd] - disable as brake the hmr in docker ...
+    // new ForkTsCheckerWebpackPlugin({
+    //  eslint: {
+    //    files: './src/**/*.{ts,tsx,js,jsx}'
+    //  },
+    //  issue: { exclude: { severity: 'warning' } }
+    // }),
+    // new ForkTsCheckerNotifierWebpackPlugin({
+    //  title: 'TypeScript'
+    // }),
     new MonacoWebpackPlugin({
       features: [
         '!accessibilityHelp',
