@@ -79,18 +79,18 @@ export class GraphGeometryModel {
     })
   }
 
-  setNodeRadii(nodes: NodeModel[]): void {
-    nodes.forEach(node => {
-      node.radius = parseFloat(this.style.forNode(node).get('diameter')) / 2
-    })
-  }
-
   onGraphChange(
     graph: GraphModel,
     options = { updateNodes: true, updateRelationships: true }
   ): void {
     if (!!options.updateNodes) {
-      this.setNodeRadii(graph.nodes())
+      graph.nodes().forEach(node => {
+        node.radius = parseFloat(this.style.forNode(node).get('diameter')) / 2
+        if (this.style.forNode(node).props['scale-by-relations']) {
+          const logScale = Math.max(0, Math.round(Math.log2(1 + node.relationshipCount(graph))) - 1)
+          node.radius += 2 * logScale
+        }
+    })
       this.formatNodeLabel(graph.nodes())
       this.formatNodeCaption(graph.nodes())
     }
