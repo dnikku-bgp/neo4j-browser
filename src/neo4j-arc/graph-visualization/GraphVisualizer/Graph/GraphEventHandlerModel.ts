@@ -189,7 +189,11 @@ export class GraphEventHandlerModel {
       this.graphModelChanged()
       return
     }
-    
+
+    // lock the exanded node, avoid loosing from view during exanding
+    d.fx = d.x
+    d.fy = d.y
+
     d.expanded = true
     const graph = this.graph
     const visualization = this.visualization
