@@ -58,7 +58,10 @@ export class GraphGeometryModel {
       nodes.forEach(node => {
 
         const template = this.style.forNode(node).get('caption')
-        const text = this.style.interpolate(template, node) ?? node.id
+        let text = this.style.interpolate(template, node) ?? node.id
+
+        const maxLen = this.style.forNode(node).props["caption-max-len"]
+        text = maxLen && text.length > maxLen ? text.substring(0, maxLen) + '...' : text
 
         const fontFamily = 'sans-serif'
         const fontSize = parseFloat(this.style.forNode(node).get('font-size'))
@@ -75,7 +78,11 @@ export class GraphGeometryModel {
   formatRelationshipCaptions(relationships: RelationshipModel[]): void {
     relationships.forEach(relationship => {
       const template = this.style.forRelationship(relationship).get('caption')
-      relationship.caption = this.style.interpolate(template, relationship)
+      const caption = this.style.interpolate(template, relationship) ?? ''
+
+      const maxLen = this.style.forRelationship(relationship).props["caption-max-len"]
+      relationship.caption = maxLen && caption.length > maxLen
+        ? caption.substring(0, maxLen) + '...' : caption
     })
   }
 
